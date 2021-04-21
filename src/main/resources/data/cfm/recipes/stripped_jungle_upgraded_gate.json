@@ -7,9 +7,6 @@
   "key": {
     "L": {
       "item": "minecraft:stripped_jungle_log"
-    },
-    "G": {
-      "tag": "forge:fence_gates/wooden"
     }
   },
   "result": {

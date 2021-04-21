@@ -9,9 +9,6 @@
     "C": {
       "item": "minecraft:white_concrete"
     },
-    "S": {
-      "tag": "forge:slimeballs"
-    },
     "G": {
       "item": "minecraft:light_gray_concrete"
     }

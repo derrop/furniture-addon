@@ -24,8 +24,7 @@ import java.util.List;
  * Author: MrCrayfish
  */
 //TODO update forge blockstate once
-public class CoffeeTableBlock extends FurnitureWaterloggedBlock
-{
+public class CoffeeTableBlock extends FurnitureWaterloggedBlock {
     public static final BooleanProperty NORTH = BooleanProperty.create("north");
     public static final BooleanProperty EAST = BooleanProperty.create("east");
     public static final BooleanProperty SOUTH = BooleanProperty.create("south");
@@ -34,15 +33,13 @@ public class CoffeeTableBlock extends FurnitureWaterloggedBlock
 
     public final ImmutableMap<BlockState, VoxelShape> SHAPES;
 
-    public CoffeeTableBlock(Properties properties)
-    {
+    public CoffeeTableBlock(Properties properties) {
         super(properties);
         this.setDefaultState(this.getStateContainer().getBaseState().with(NORTH, false).with(EAST, false).with(SOUTH, false).with(WEST, false).with(TALL, false));
         SHAPES = this.generateShapes(this.getStateContainer().getValidStates());
     }
 
-    private ImmutableMap<BlockState, VoxelShape> generateShapes(ImmutableList<BlockState> states)
-    {
+    private ImmutableMap<BlockState, VoxelShape> generateShapes(ImmutableList<BlockState> states) {
         final VoxelShape TABLE_TOP_SHORT = Block.makeCuboidShape(0.0, 6.0, 0.0, 16.0, 8.0, 16.0);
         final VoxelShape TABLE_TOP_TALL = Block.makeCuboidShape(0.0, 14.0, 0.0, 16.0, 16.0, 16.0);
         final VoxelShape LEG_SOUTH_EAST_TALL = Block.makeCuboidShape(13.5, 0, 13.5, 15.5, 14, 15.5);
@@ -55,8 +52,7 @@ public class CoffeeTableBlock extends FurnitureWaterloggedBlock
         final VoxelShape LEG_NORTH_EAST_SHORT = Block.makeCuboidShape(13.5, 0, 0.5, 15.5, 6, 2.5);
 
         ImmutableMap.Builder<BlockState, VoxelShape> builder = new ImmutableMap.Builder<>();
-        for(BlockState state : states)
-        {
+        for (BlockState state : states) {
             boolean tall = state.get(TALL);
             boolean north = state.get(NORTH);
             boolean east = state.get(EAST);
@@ -65,20 +61,16 @@ public class CoffeeTableBlock extends FurnitureWaterloggedBlock
 
             List<VoxelShape> shapes = new ArrayList<>();
             shapes.add(tall ? TABLE_TOP_TALL : TABLE_TOP_SHORT);
-            if(!north && !west)
-            {
+            if (!north && !west) {
                 shapes.add(tall ? LEG_NORTH_WEST_TALL : LEG_NORTH_WEST_SHORT);
             }
-            if(!north && !east)
-            {
+            if (!north && !east) {
                 shapes.add(tall ? LEG_NORTH_EAST_TALL : LEG_NORTH_EAST_SHORT);
             }
-            if(!south && !west)
-            {
+            if (!south && !west) {
                 shapes.add(tall ? LEG_SOUTH_WEST_TALL : LEG_SOUTH_WEST_SHORT);
             }
-            if(!south && !east)
-            {
+            if (!south && !east) {
                 shapes.add(tall ? LEG_SOUTH_EAST_TALL : LEG_SOUTH_EAST_SHORT);
             }
             builder.put(state, VoxelShapeHelper.combineAll(shapes));
@@ -87,20 +79,17 @@ public class CoffeeTableBlock extends FurnitureWaterloggedBlock
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader reader, BlockPos pos, ISelectionContext context)
-    {
+    public VoxelShape getShape(BlockState state, IBlockReader reader, BlockPos pos, ISelectionContext context) {
         return SHAPES.get(state);
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, IBlockReader reader, BlockPos pos, ISelectionContext context)
-    {
+    public VoxelShape getCollisionShape(BlockState state, IBlockReader reader, BlockPos pos, ISelectionContext context) {
         return SHAPES.get(state);
     }
 
     @Override
-    public BlockState updatePostPlacement(BlockState state, Direction direction, BlockState newState, IWorld world, BlockPos pos, BlockPos newPos)
-    {
+    public BlockState updatePostPlacement(BlockState state, Direction direction, BlockState newState, IWorld world, BlockPos pos, BlockPos newPos) {
         boolean tall = state.get(TALL);
         boolean north = isCoffeeTable(world, pos, Direction.NORTH, tall);
         boolean east = isCoffeeTable(world, pos, Direction.EAST, tall);
@@ -109,28 +98,24 @@ public class CoffeeTableBlock extends FurnitureWaterloggedBlock
         return state.with(NORTH, north).with(EAST, east).with(SOUTH, south).with(WEST, west);
     }
 
-    private boolean isCoffeeTable(IWorld world, BlockPos source, Direction direction, boolean tall)
-    {
+    private boolean isCoffeeTable(IWorld world, BlockPos source, Direction direction, boolean tall) {
         BlockState state = world.getBlockState(source.offset(direction));
         return state.getBlock() == this && state.get(TALL) == tall;
     }
 
     @Nullable
     @Override
-    public BlockState getStateForPlacement(BlockItemUseContext context)
-    {
+    public BlockState getStateForPlacement(BlockItemUseContext context) {
         BlockPos pos = context.getPos();
         BlockState state = context.getWorld().getBlockState(pos);
-        if(state.getBlock() == this)
-        {
+        if (state.getBlock() == this) {
             return state.with(TALL, true);
         }
         return super.getStateForPlacement(context);
     }
 
     @Override
-    public boolean isReplaceable(BlockState state, BlockItemUseContext context)
-    {
+    public boolean isReplaceable(BlockState state, BlockItemUseContext context) {
         ItemStack stack = context.getItem();
         return !state.get(TALL) && stack.getItem() == this.asItem();
     }
@@ -147,8 +132,7 @@ public class CoffeeTableBlock extends FurnitureWaterloggedBlock
     }*/
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
-    {
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
         super.fillStateContainer(builder);
         builder.add(NORTH);
         builder.add(EAST);

@@ -12,9 +12,6 @@
     },
     "W": {
       "item": "minecraft:white_concrete"
-    },
-    "C": {
-      "tag": "forge:chests/wooden"
     }
   },
   "result": {

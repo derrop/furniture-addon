@@ -1,96 +1,105 @@
-import groovy.json.JsonOutput
-import groovy.json.JsonSlurper
-
 buildscript {
     repositories {
         maven { url = 'https://files.minecraftforge.net/maven' }
+        maven { url = 'https://repo.spongepowered.org/maven' }
+        maven {
+            name = 'impactdevelopment-repo'
+            url = 'https://impactdevelopment.github.io/maven/'
+        }
         jcenter()
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath group: 'com.github.ImpactDevelopment', name: 'ForgeGradle', version: '3.0.115'
+        classpath group: 'com.github.ImpactDevelopment', name: 'MixinGradle', version: '0.6.2'
     }
+}
+
+plugins {
+    id 'de.undercouch.download' version '4.0.0'
 }
 apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
+apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
+apply plugin: 'org.spongepowered.mixin'
 
-version = project.property('mod.version') + "-" + project.property('minecraft.version')
-group = "com.mrcrayfish"
-archivesBaseName = "furniture"
+version = '1.0.0'
+group = 'net.labymod.addons' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = 'FurnitureAddon'
 
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
+
+def mcpVersion = [channel: 'snapshot', version: '20201028-1.16.3']
+
+mixin {
+    defaultObfuscationEnv searge
+    add sourceSets.main, "furnituremod.refmap.json"
+}
 
 minecraft {
-    mappings channel: project.property('mappings.channel'), version: project.property('mappings.version')
+    mappings mcpVersion
+
+    if (getProject().hasProperty("forge")) {
+        reobfMappings 'searge'
+    } else {
+        reobfMappings 'notch'
+    }
 
     runs {
         client {
             workingDirectory project.file('run')
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-            property 'forge.logging.console.level', 'debug'
-            mods {
-                cfm {
-                    source sourceSets.main
-                }
-            }
-        }
 
-        server {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-            property 'forge.logging.console.level', 'debug'
-            mods {
-                cfm {
-                    source sourceSets.main
-                }
-            }
-        }
+            main "launch.AddonLauncher"
 
-        data {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-            property 'forge.logging.console.level', 'debug'
-            args '--mod', 'cfm', '--all', '--output', file('src/generated/resources/')
-            mods {
-                cfm {
-                    source sourceSets.main
-                }
-            }
+            environment 'assetIndex', '{asset_index}'
+            environment 'assetDirectory', downloadAssets.output
+            environment 'nativesDirectory', extractNatives.output
+
+            environment 'tweakClass', 'net.labymod.vanilla.LabyModTweaker'
+
+            jvmArg('-DdebugMode=true')
+            jvmArg('-Daddonresources=addon.json')
         }
     }
 }
 
-/*repositories {
+repositories {
+    mavenCentral()
     maven {
-        name = "CurseForge"
-        url = "https://minecraft.curseforge.com/api/maven/"
+        name = "spongepowered"
+        url = "https://repo.spongepowered.org/maven"
     }
-}*/
+    maven {
+        name = 'impactdevelopment-repo'
+        url = 'https://impactdevelopment.github.io/maven/'
+    }
+    mavenLocal()
+}
+
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.3-34.1.1'
-    //compileOnly "filters:Filters-1.1.0:1.14.4:deobf"
+    annotationProcessor("org.spongepowered:mixin:0.8.2:processor")
+
+    minecraft 'com.github.ImpactDevelopment:Vanilla:1.16.5'
+    compile(files('libs/lm_api_mc1.16.5.jar'))
+
+    compile("org.ow2.asm:asm-analysis:6.2") { transitive = false }
+    compile("org.ow2.asm:asm-util:6.2") { transitive = false }
+    compile("org.ow2.asm:asm-commons:6.2") { transitive = false }
+    compile("org.spongepowered:mixin:0.8.2") { transitive = false }
+    compile("net.minecraft:launchwrapper:1.12") { transitive = false }
 }
 
-processResources {
-    // Minify json resources
-    doLast {
-        fileTree(dir: outputs.files.asPath, include: "**/*.json").each {
-            File file -> file.text = JsonOutput.toJson(new JsonSlurper().parse(file))
-        }
-    }
-}
+task downloadAPI(type: Download) {
+    group("labymod")
 
-jar {
-    manifest {
-        attributes([
-            "Specification-Title"     : project.property('mod.name'),
-            "Specification-Vendor"    : project.property('mod.author'),
-            "Specification-Version"   : "1",
-            "Implementation-Title"    : project.name,
-            "Implementation-Version"  : "${version}",
-            "Implementation-Vendor"   : project.property('mod.author'),
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-        ])
+    File libraryDirectory = new File("libs/")
+
+    if (!libraryDirectory.exists()) {
+        libraryDirectory.mkdirs()
     }
+
+    src "https://dl.labymod.net/latest/api/files/lm_api_mc1.16.5.jar"
+    dest 'libs/'
 }

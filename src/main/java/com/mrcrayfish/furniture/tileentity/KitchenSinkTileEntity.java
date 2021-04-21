@@ -1,15 +1,13 @@
 package com.mrcrayfish.furniture.tileentity;
 
 import com.mrcrayfish.furniture.core.ModTileEntities;
-import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraft.tileentity.TileEntity;
 
 /**
  * Author: MrCrayfish
  */
-public class KitchenSinkTileEntity extends FluidHandlerSyncedTileEntity
-{
-    public KitchenSinkTileEntity()
-    {
-        super(ModTileEntities.KITCHEN_SINK, FluidAttributes.BUCKET_VOLUME * 10);
+public class KitchenSinkTileEntity extends TileEntity {
+    public KitchenSinkTileEntity() {
+        super(ModTileEntities.KITCHEN_SINK);
     }
 }

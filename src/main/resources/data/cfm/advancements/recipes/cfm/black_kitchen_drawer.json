@@ -7,14 +7,7 @@
   },
   "criteria": {
     "has_stone": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "tag": "forge:stone"
-          }
-        ]
-      }
+      "trigger": "minecraft:inventory_changed"
     },
     "has_terracotta": {
       "trigger": "minecraft:inventory_changed",
@@ -27,14 +20,7 @@
       }
     },
     "has_chest": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "tag": "forge:chests/wooden"
-          }
-        ]
-      }
+      "trigger": "minecraft:inventory_changed"
     },
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",

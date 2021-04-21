@@ -1,0 +1,8 @@
+{
+  "name": "FurnitureMod",
+  "mainClass": "com.mrcrayfish.furniture.FurnitureAddon",
+  "transformerClass": "com.mrcrayfish.furniture.mixin.FurnitureTransformer",
+  "version": 1,
+  "author": "MrCrayfish, derrop",
+  "uuid": "%uuid%"
+}

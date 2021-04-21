@@ -1,24 +1,14 @@
 package com.mrcrayfish.furniture.core;
 
-import com.mrcrayfish.furniture.Reference;
 import com.mrcrayfish.furniture.util.Names;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-
-import java.util.ArrayList;
-import java.util.List;
+import net.minecraft.util.registry.Registry;
 
 /**
  * Author: MrCrayfish
  */
-@Mod.EventBusSubscriber(modid = Reference.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public class ModSounds
-{
-    private static final List<SoundEvent> SOUNDS = new ArrayList<>();
-
+public class ModSounds {
     public static final SoundEvent BLOCK_CABINET_OPEN = register(Names.Sound.CABINET_OPEN);
     public static final SoundEvent BLOCK_CABINET_CLOSE = register(Names.Sound.CABINET_CLOSE);
     public static final SoundEvent BLOCK_BEDSIDE_CABINET_OPEN = register(Names.Sound.BEDSIDE_CABINET_OPEN);
@@ -32,19 +22,13 @@ public class ModSounds
     public static final SoundEvent BLOCK_FRIDGE_OPEN = register(Names.Sound.FRIDGE_OPEN);
     public static final SoundEvent BLOCK_FRIDGE_CLOSE = register(Names.Sound.FRIDGE_CLOSE);
 
-    private static SoundEvent register(String name)
-    {
+    private static SoundEvent register(String name) {
         SoundEvent event = new SoundEvent(new ResourceLocation(name));
-        event.setRegistryName(name);
-        SOUNDS.add(event);
+        Registry.register(Registry.SOUND_EVENT, name, event);
         return event;
     }
 
-    @SubscribeEvent
-    @SuppressWarnings("unused")
-    public static void registerSounds(final RegistryEvent.Register<SoundEvent> event)
-    {
-        SOUNDS.forEach(soundEvent -> event.getRegistry().register(soundEvent));
-        SOUNDS.clear();
+
+    public static void register() {
     }
 }

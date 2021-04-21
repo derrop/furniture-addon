@@ -21,38 +21,32 @@ import java.util.List;
 /**
  * Author: MrCrayfish
  */
-public class DeskBlock extends FurnitureHorizontalWaterloggedBlock
-{
+public class DeskBlock extends FurnitureHorizontalWaterloggedBlock {
     public static final EnumProperty<Type> TYPE = EnumProperty.create("type", Type.class);
-
-    private MaterialType materialType;
     public final ImmutableMap<BlockState, VoxelShape> SHAPES;
+    private MaterialType materialType;
 
-    public DeskBlock(Properties properties, MaterialType materialType)
-    {
+    public DeskBlock(Properties properties, MaterialType materialType) {
         super(properties);
         this.materialType = materialType;
         this.setDefaultState(this.getStateContainer().getBaseState().with(DIRECTION, Direction.NORTH).with(TYPE, Type.SINGLE));
         SHAPES = this.generateShapes(this.getStateContainer().getValidStates());
     }
 
-    protected ImmutableMap<BlockState, VoxelShape> generateShapes(ImmutableList<BlockState> states)
-    {
+    protected ImmutableMap<BlockState, VoxelShape> generateShapes(ImmutableList<BlockState> states) {
         final VoxelShape[] DESK_TOP = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(0, 14, 0, 16, 16, 16), Direction.SOUTH));
         final VoxelShape[] DESK_BACK = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(0, 2, 1, 16, 14, 3), Direction.SOUTH));
         final VoxelShape[] DESK_LEFT = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(0, 0, 0, 2, 14, 15), Direction.SOUTH));
         final VoxelShape[] DESK_RIGHT = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(14, 0, 0, 16, 14, 15), Direction.SOUTH));
 
         ImmutableMap.Builder<BlockState, VoxelShape> builder = new ImmutableMap.Builder<>();
-        for(BlockState state : states)
-        {
+        for (BlockState state : states) {
             Direction direction = state.get(DIRECTION);
             Type type = state.get(TYPE);
             List<VoxelShape> shapes = new ArrayList<>();
             shapes.add(DESK_TOP[direction.getHorizontalIndex()]);
             shapes.add(DESK_BACK[direction.getHorizontalIndex()]);
-            switch(type)
-            {
+            switch (type) {
                 case SINGLE:
                     shapes.add(DESK_LEFT[direction.getHorizontalIndex()]);
                     shapes.add(DESK_RIGHT[direction.getHorizontalIndex()]);
@@ -70,53 +64,44 @@ public class DeskBlock extends FurnitureHorizontalWaterloggedBlock
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader reader, BlockPos pos, ISelectionContext context)
-    {
+    public VoxelShape getShape(BlockState state, IBlockReader reader, BlockPos pos, ISelectionContext context) {
         return SHAPES.get(state);
     }
 
     @Override
-    public VoxelShape getRenderShape(BlockState state, IBlockReader reader, BlockPos pos)
-    {
+    public VoxelShape getRenderShape(BlockState state, IBlockReader reader, BlockPos pos) {
         return SHAPES.get(state);
     }
 
     @Override
-    public BlockState updatePostPlacement(BlockState state, Direction direction, BlockState newState, IWorld world, BlockPos pos, BlockPos newPos)
-    {
+    public BlockState updatePostPlacement(BlockState state, Direction direction, BlockState newState, IWorld world, BlockPos pos, BlockPos newPos) {
         Direction dir = state.get(DIRECTION);
         boolean left = isDesk(world, pos, dir.rotateYCCW(), dir);
         boolean right = isDesk(world, pos, dir.rotateY(), dir);
-        if(left && right)
-        {
+        if (left && right) {
             return state.with(TYPE, Type.MIDDLE);
         }
-        if(left)
-        {
+        if (left) {
             return state.with(TYPE, Type.RIGHT);
         }
-        if(right)
-        {
+        if (right) {
             return state.with(TYPE, Type.LEFT);
         }
         return state.with(TYPE, Type.SINGLE);
     }
 
-    private boolean isDesk(IWorld world, BlockPos source, Direction checkDirection, Direction tableDirection)
-    {
+    private boolean isDesk(IWorld world, BlockPos source, Direction checkDirection, Direction tableDirection) {
         BlockState state = world.getBlockState(source.offset(checkDirection));
         return state.getBlock() instanceof DeskBlock && ((DeskBlock) state.getBlock()).materialType == materialType && state.get(DIRECTION) == tableDirection;
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
-    {
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
         super.fillStateContainer(builder);
         builder.add(TYPE);
     }
 
-    public enum Type implements IStringSerializable
-    {
+    public enum Type implements IStringSerializable {
         SINGLE("single"),
         LEFT("left"),
         RIGHT("right"),
@@ -124,26 +109,22 @@ public class DeskBlock extends FurnitureHorizontalWaterloggedBlock
 
         private final String id;
 
-        Type(String id)
-        {
-           this.id = id;
+        Type(String id) {
+            this.id = id;
         }
 
         @Override
-        public String getString()
-        {
+        public String getString() {
             return id;
         }
 
         @Override
-        public String toString()
-        {
+        public String toString() {
             return id;
         }
     }
 
-    public enum MaterialType
-    {
+    public enum MaterialType {
         OAK,
         BIRCH,
         SPRUCE,

@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "package": "com.mrcrayfish.furniture.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "furnituremod.refmap.json",
+  "verbose": false,
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "client": [
+    "BlocksMixin",
+    "TileEntityMixin",
+    "SoundEventsMixin",
+    "ItemsMixin",
+    "ItemGroupMixin",
+    "BlockLootTablesMixin",
+    "ResourceManagerMixin"
+  ]
+}

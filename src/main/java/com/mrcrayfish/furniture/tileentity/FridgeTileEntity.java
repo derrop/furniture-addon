@@ -20,48 +20,39 @@ import net.minecraft.world.World;
 /**
  * Author: MrCrayfish
  */
-public class FridgeTileEntity extends BasicLootTileEntity
-{
+public class FridgeTileEntity extends BasicLootTileEntity {
     private int playerCount;
 
-    public FridgeTileEntity()
-    {
+    public FridgeTileEntity() {
         super(ModTileEntities.FRIDGE);
     }
 
     @Override
-    public int getSizeInventory()
-    {
+    public int getSizeInventory() {
         return 27;
     }
 
     @Override
-    protected ITextComponent getDefaultName()
-    {
+    protected ITextComponent getDefaultName() {
         return new TranslationTextComponent("container.cfm.fridge");
     }
 
     @Override
-    protected Container createMenu(int windowId, PlayerInventory playerInventory)
-    {
+    protected Container createMenu(int windowId, PlayerInventory playerInventory) {
         return new ChestContainer(ContainerType.GENERIC_9X3, windowId, playerInventory, this, 3);
     }
 
     @Override
-    public void openInventory(PlayerEntity playerEntity)
-    {
-        if(!playerEntity.isSpectator())
-        {
-            if(this.playerCount < 0)
-            {
+    public void openInventory(PlayerEntity playerEntity) {
+        if (!playerEntity.isSpectator()) {
+            if (this.playerCount < 0) {
                 this.playerCount = 0;
             }
             this.playerCount++;
 
             BlockState blockState = this.getBlockState();
             boolean open = blockState.get(FridgeBlock.OPEN);
-            if(!open)
-            {
+            if (!open) {
                 this.playDoorSound(blockState, ModSounds.BLOCK_FRIDGE_OPEN);
                 this.setDoorState(blockState, true);
             }
@@ -71,45 +62,35 @@ public class FridgeTileEntity extends BasicLootTileEntity
     }
 
     @Override
-    public void closeInventory(PlayerEntity playerEntity)
-    {
-        if(!playerEntity.isSpectator())
-        {
+    public void closeInventory(PlayerEntity playerEntity) {
+        if (!playerEntity.isSpectator()) {
             this.playerCount--;
         }
 
     }
 
-    private void scheduleTick()
-    {
+    private void scheduleTick() {
         this.world.getPendingBlockTicks().scheduleTick(this.getPos(), this.getBlockState().getBlock(), 5);
     }
 
-    public void onScheduledTick()
-    {
+    public void onScheduledTick() {
         int x = this.pos.getX();
         int y = this.pos.getY();
         int z = this.pos.getZ();
         World world = this.getWorld();
-        if(world != null)
-        {
+        if (world != null) {
             this.playerCount = ChestTileEntity.calculatePlayersUsing(world, this, x, y, z); //Gets a count of players around using this inventory
-            if(this.playerCount > 0)
-            {
+            if (this.playerCount > 0) {
                 this.scheduleTick();
-            }
-            else
-            {
+            } else {
                 BlockState blockState = this.getBlockState();
-                if(!(blockState.getBlock() instanceof FridgeBlock))
-                {
+                if (!(blockState.getBlock() instanceof FridgeBlock)) {
                     this.remove();
                     return;
                 }
 
                 boolean open = blockState.get(FridgeBlock.OPEN);
-                if(open)
-                {
+                if (open) {
                     this.playDoorSound(blockState, ModSounds.BLOCK_FRIDGE_CLOSE);
                     this.setDoorState(blockState, false);
                 }
@@ -117,24 +98,20 @@ public class FridgeTileEntity extends BasicLootTileEntity
         }
     }
 
-    private void playDoorSound(BlockState blockState, SoundEvent soundEvent)
-    {
+    private void playDoorSound(BlockState blockState, SoundEvent soundEvent) {
         Vector3i directionVec = blockState.get(FridgeBlock.DIRECTION).getOpposite().getDirectionVec();
         double x = this.pos.getX() + 0.5D + directionVec.getX() / 2.0D;
         double y = this.pos.getY() + 0.5D + directionVec.getY() / 2.0D;
         double z = this.pos.getZ() + 0.5D + directionVec.getZ() / 2.0D;
         World world = this.getWorld();
-        if(world != null)
-        {
+        if (world != null) {
             world.playSound(null, x, y, z, soundEvent, SoundCategory.BLOCKS, 1.0F, 1.0F);
         }
     }
 
-    private void setDoorState(BlockState blockState, boolean open)
-    {
+    private void setDoorState(BlockState blockState, boolean open) {
         World world = this.getWorld();
-        if(world != null)
-        {
+        if (world != null) {
             world.setBlockState(this.getPos(), blockState.with(FridgeBlock.OPEN, open), 3);
         }
     }

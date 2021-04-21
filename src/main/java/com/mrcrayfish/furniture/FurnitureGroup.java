@@ -4,16 +4,13 @@ import com.mrcrayfish.furniture.core.ModBlocks;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 
-public class FurnitureGroup extends ItemGroup
-{
-    public FurnitureGroup(String label)
-    {
-        super(label);
+public class FurnitureGroup extends ItemGroup {
+    public FurnitureGroup(String label) {
+        super(12, label);
     }
 
     @Override
-    public ItemStack createIcon()
-    {
+    public ItemStack createIcon() {
         return new ItemStack(ModBlocks.CHAIR_OAK);
     }
 }

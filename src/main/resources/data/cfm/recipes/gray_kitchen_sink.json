@@ -10,12 +10,8 @@
     "C": {
       "item": "minecraft:gray_terracotta"
     },
-    "I": {
-      "tag": "forge:ingots/iron"
-    },
-    "P": {
-      "tag": "forge:stone"
-    },
+
+
     "B": {
       "item": "minecraft:bucket"
     }

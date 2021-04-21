@@ -7,9 +7,6 @@
   "key": {
     "L": {
       "item": "minecraft:spruce_log"
-    },
-    "G": {
-      "tag": "forge:fence_gates/wooden"
     }
   },
   "result": {

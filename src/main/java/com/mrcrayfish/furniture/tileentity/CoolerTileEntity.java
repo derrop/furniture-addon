@@ -20,48 +20,39 @@ import net.minecraft.world.World;
 /**
  * Author: MrCrayfish
  */
-public class CoolerTileEntity extends BasicLootTileEntity
-{
+public class CoolerTileEntity extends BasicLootTileEntity {
     private int playerCount;
 
-    public CoolerTileEntity()
-    {
+    public CoolerTileEntity() {
         super(ModTileEntities.COOLER);
     }
 
     @Override
-    public int getSizeInventory()
-    {
+    public int getSizeInventory() {
         return 9;
     }
 
     @Override
-    protected ITextComponent getDefaultName()
-    {
+    protected ITextComponent getDefaultName() {
         return new TranslationTextComponent("container.cfm.cooler");
     }
 
     @Override
-    protected Container createMenu(int windowId, PlayerInventory playerInventory)
-    {
+    protected Container createMenu(int windowId, PlayerInventory playerInventory) {
         return new ChestContainer(ContainerType.GENERIC_9X1, windowId, playerInventory, this, 1);
     }
 
     @Override
-    public void openInventory(PlayerEntity playerEntity)
-    {
-        if(!playerEntity.isSpectator())
-        {
-            if(this.playerCount < 0)
-            {
+    public void openInventory(PlayerEntity playerEntity) {
+        if (!playerEntity.isSpectator()) {
+            if (this.playerCount < 0) {
                 this.playerCount = 0;
             }
             this.playerCount++;
 
             BlockState blockState = this.getBlockState();
             boolean open = blockState.get(CoolerBlock.OPEN);
-            if(!open)
-            {
+            if (!open) {
                 this.playLidSound(blockState, ModSounds.BLOCK_CABINET_OPEN);
                 this.setLidState(blockState, true);
             }
@@ -71,44 +62,34 @@ public class CoolerTileEntity extends BasicLootTileEntity
     }
 
     @Override
-    public void closeInventory(PlayerEntity playerEntity)
-    {
-        if(!playerEntity.isSpectator())
-        {
+    public void closeInventory(PlayerEntity playerEntity) {
+        if (!playerEntity.isSpectator()) {
             this.playerCount--;
         }
     }
 
-    private void scheduleTick()
-    {
+    private void scheduleTick() {
         this.world.getPendingBlockTicks().scheduleTick(this.getPos(), this.getBlockState().getBlock(), 5);
     }
 
-    public void onScheduledTick()
-    {
+    public void onScheduledTick() {
         int x = this.pos.getX();
         int y = this.pos.getY();
         int z = this.pos.getZ();
         World world = this.getWorld();
-        if(world != null)
-        {
+        if (world != null) {
             this.playerCount = ChestTileEntity.calculatePlayersUsing(world, this, x, y, z); //Gets a count of players around using this inventory
-            if(this.playerCount > 0)
-            {
+            if (this.playerCount > 0) {
                 this.scheduleTick();
-            }
-            else
-            {
+            } else {
                 BlockState blockState = this.getBlockState();
-                if(!(blockState.getBlock() instanceof CoolerBlock))
-                {
+                if (!(blockState.getBlock() instanceof CoolerBlock)) {
                     this.remove();
                     return;
                 }
 
                 boolean open = blockState.get(CoolerBlock.OPEN);
-                if(open)
-                {
+                if (open) {
                     this.playLidSound(blockState, ModSounds.BLOCK_CABINET_CLOSE);
                     this.setLidState(blockState, false);
                 }
@@ -116,24 +97,20 @@ public class CoolerTileEntity extends BasicLootTileEntity
         }
     }
 
-    private void playLidSound(BlockState blockState, SoundEvent soundEvent)
-    {
+    private void playLidSound(BlockState blockState, SoundEvent soundEvent) {
         Vector3i directionVec = blockState.get(CoolerBlock.DIRECTION).getDirectionVec();
         double x = this.pos.getX() + 0.5D + directionVec.getX() / 2.0D;
         double y = this.pos.getY() + 0.5D + directionVec.getY() / 2.0D;
         double z = this.pos.getZ() + 0.5D + directionVec.getZ() / 2.0D;
         World world = this.getWorld();
-        if(world != null)
-        {
+        if (world != null) {
             world.playSound(null, x, y, z, soundEvent, SoundCategory.BLOCKS, 0.75F, world.rand.nextFloat() * 0.1F + 0.7F);
         }
     }
 
-    private void setLidState(BlockState blockState, boolean open)
-    {
+    private void setLidState(BlockState blockState, boolean open) {
         World world = this.getWorld();
-        if(world != null)
-        {
+        if (world != null) {
             world.setBlockState(this.getPos(), blockState.with(CoolerBlock.OPEN, open), 3);
         }
     }

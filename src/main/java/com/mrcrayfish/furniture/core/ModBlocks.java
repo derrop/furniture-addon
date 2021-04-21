@@ -1,22 +1,44 @@
 package com.mrcrayfish.furniture.core;
 
-import com.mrcrayfish.furniture.FurnitureMod;
-import com.mrcrayfish.furniture.Reference;
-import com.mrcrayfish.furniture.block.*;
-import com.mrcrayfish.furniture.item.BlockSupplierItem;
+import com.mrcrayfish.furniture.FurnitureAddon;
+import com.mrcrayfish.furniture.block.BedsideCabinetBlock;
+import com.mrcrayfish.furniture.block.BlindsBlock;
+import com.mrcrayfish.furniture.block.CabinetBlock;
+import com.mrcrayfish.furniture.block.ChairBlock;
+import com.mrcrayfish.furniture.block.CoffeeTableBlock;
+import com.mrcrayfish.furniture.block.CoolerBlock;
+import com.mrcrayfish.furniture.block.CrateBlock;
+import com.mrcrayfish.furniture.block.DeskBlock;
+import com.mrcrayfish.furniture.block.DeskCabinetBlock;
+import com.mrcrayfish.furniture.block.DivingBoardBlock;
+import com.mrcrayfish.furniture.block.DoorMatBlock;
+import com.mrcrayfish.furniture.block.FreezerBlock;
+import com.mrcrayfish.furniture.block.FridgeBlock;
+import com.mrcrayfish.furniture.block.GrillBlock;
+import com.mrcrayfish.furniture.block.HedgeBlock;
+import com.mrcrayfish.furniture.block.KitchenCounterBlock;
+import com.mrcrayfish.furniture.block.KitchenDrawerBlock;
+import com.mrcrayfish.furniture.block.KitchenSinkBlock;
+import com.mrcrayfish.furniture.block.MailBoxBlock;
+import com.mrcrayfish.furniture.block.ParkBenchBlock;
+import com.mrcrayfish.furniture.block.PostBoxBlock;
+import com.mrcrayfish.furniture.block.RockPath;
+import com.mrcrayfish.furniture.block.SofaBlock;
+import com.mrcrayfish.furniture.block.TableBlock;
+import com.mrcrayfish.furniture.block.TrampolineBlock;
+import com.mrcrayfish.furniture.block.UpgradedFenceBlock;
+import com.mrcrayfish.furniture.block.UpgradedGateBlock;
 import com.mrcrayfish.furniture.item.DoorMatItem;
 import com.mrcrayfish.furniture.util.Names;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
-import net.minecraft.block.material.PushReaction;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraft.util.registry.Registry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,15 +47,12 @@ import java.util.function.Function;
 /**
  * Author: MrCrayfish
  */
-@Mod.EventBusSubscriber(modid = Reference.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public class ModBlocks
-{
-    public static final Material WOOD = new Material(MaterialColor.WOOD, false, false, false, false,  true, false, PushReaction.NORMAL);
-    public static final Material STONE = new Material(MaterialColor.STONE, false, false, false, false,  true, false, PushReaction.NORMAL);
-    public static final Material WOOL = new Material(MaterialColor.WOOL, false, false, false, false,  true, false, PushReaction.NORMAL);
+public class ModBlocks {
+    private static final List<FurnitureBlock> BLOCKS = new ArrayList<>();
 
-    private static final List<Block> BLOCKS = new ArrayList<>();
-    private static final List<Item> ITEMS = new ArrayList<>();
+    private static final Material WOOD = Material.WOOD;
+    private static final Material STONE = Material.ROCK;
+    private static final Material WOOL = Material.WOOL;
 
     public static final Block TABLE_OAK = register(Names.Block.TABLE_OAK, new TableBlock(Block.Properties.create(WOOD).hardnessAndResistance(0.5F).sound(SoundType.WOOD)));
     public static final Block TABLE_SPRUCE = register(Names.Block.TABLE_SPRUCE, new TableBlock(Block.Properties.create(WOOD).hardnessAndResistance(0.5F).sound(SoundType.WOOD)));
@@ -163,7 +182,7 @@ public class ModBlocks
     public static final Block SOFA_GREEN = register(Names.Block.SOFA_GREEN, new SofaBlock(Block.Properties.create(WOOL, MaterialColor.GREEN).hardnessAndResistance(0.5F).sound(SoundType.WOOD)));
     public static final Block SOFA_RED = register(Names.Block.SOFA_RED, new SofaBlock(Block.Properties.create(WOOL, MaterialColor.RED).hardnessAndResistance(0.5F).sound(SoundType.WOOD)));
     public static final Block SOFA_BLACK = register(Names.Block.SOFA_BLACK, new SofaBlock(Block.Properties.create(WOOL, MaterialColor.BLACK).hardnessAndResistance(0.5F).sound(SoundType.WOOD)));
-    public static final Block SOFA_RAINBOW = register(Names.Block.SOFA_RAINBOW, new SofaBlock(Block.Properties.create(WOOL, MaterialColor.SNOW).hardnessAndResistance(0.5F).sound(SoundType.WOOD)), new Item.Properties());
+    public static final Block SOFA_RAINBOW = register(Names.Block.SOFA_RAINBOW, new SofaBlock(Block.Properties.create(WOOL, MaterialColor.SNOW).hardnessAndResistance(0.5F).sound(SoundType.WOOD)));
     public static final Block BLINDS_OAK = register(Names.Block.BLINDS_OAK, new BlindsBlock(Block.Properties.create(WOOD).hardnessAndResistance(0.5F).sound(SoundType.WOOD)));
     public static final Block BLINDS_SPRUCE = register(Names.Block.BLINDS_SPRUCE, new BlindsBlock(Block.Properties.create(WOOD).hardnessAndResistance(0.5F).sound(SoundType.WOOD)));
     public static final Block BLINDS_BIRCH = register(Names.Block.BLINDS_BIRCH, new BlindsBlock(Block.Properties.create(WOOD).hardnessAndResistance(0.5F).sound(SoundType.WOOD)));
@@ -324,7 +343,7 @@ public class ModBlocks
     public static final Block GRILL_GREEN = register(Names.Block.GRILL_GREEN, new GrillBlock(Block.Properties.from(Blocks.STONE)));
     public static final Block GRILL_RED = register(Names.Block.GRILL_RED, new GrillBlock(Block.Properties.from(Blocks.STONE)));
     public static final Block GRILL_BLACK = register(Names.Block.GRILL_BLACK, new GrillBlock(Block.Properties.from(Blocks.STONE)));
-    public static final Block DOOR_MAT = register(Names.Block.DOOR_MAT, new DoorMatBlock(Block.Properties.from(Blocks.WHITE_WOOL)), block -> new DoorMatItem(block, new Item.Properties().group(FurnitureMod.GROUP)));
+    public static final Block DOOR_MAT = register(Names.Block.DOOR_MAT, new DoorMatBlock(Block.Properties.from(Blocks.WHITE_WOOL)), block -> new DoorMatItem(block, defaultProperties()));
     public static final Block DIVING_BOARD = register(Names.Block.DIVING_BOARD, new DivingBoardBlock(Block.Properties.from(Blocks.OAK_PLANKS)));
     public static final Block KITCHEN_COUNTER_OAK = register(Names.Block.KITCHEN_COUNTER_OAK, new KitchenCounterBlock(Block.Properties.from(Blocks.OAK_PLANKS)));
     public static final Block KITCHEN_COUNTER_SPRUCE = register(Names.Block.KITCHEN_COUNTER_SPRUCE, new KitchenCounterBlock(Block.Properties.from(Blocks.OAK_PLANKS)));
@@ -422,55 +441,115 @@ public class ModBlocks
     public static final Block KITCHEN_SINK_GREEN = register(Names.Block.KITCHEN_SINK_GREEN, new KitchenSinkBlock(Block.Properties.from(Blocks.OAK_PLANKS), false));
     public static final Block KITCHEN_SINK_RED = register(Names.Block.KITCHEN_SINK_RED, new KitchenSinkBlock(Block.Properties.from(Blocks.OAK_PLANKS), false));
     public static final Block KITCHEN_SINK_BLACK = register(Names.Block.KITCHEN_SINK_BLACK, new KitchenSinkBlock(Block.Properties.from(Blocks.OAK_PLANKS), false));
-    public static final Block FRIDGE_LIGHT = register(Names.Block.FRIDGE_LIGHT, new FridgeBlock(Block.Properties.from(Blocks.IRON_BLOCK), () -> ModBlocks.FREEZER_LIGHT), block -> new BlockSupplierItem(new Item.Properties().group(FurnitureMod.GROUP), block, () -> ModBlocks.FREEZER_LIGHT));
-    public static final Block FREEZER_LIGHT = register(Names.Block.FREEZER_LIGHT, new FreezerBlock(Block.Properties.from(Blocks.IRON_BLOCK), FRIDGE_LIGHT), (BlockItem) null);
-    public static final Block FRIDGE_DARK = register(Names.Block.FRIDGE_DARK, new FridgeBlock(Block.Properties.from(Blocks.IRON_BLOCK), () -> ModBlocks.FREEZER_DARK), block -> new BlockSupplierItem(new Item.Properties().group(FurnitureMod.GROUP), block, () -> ModBlocks.FREEZER_DARK));
-    public static final Block FREEZER_DARK = register(Names.Block.FREEZER_DARK, new FreezerBlock(Block.Properties.from(Blocks.IRON_BLOCK), FRIDGE_DARK), (BlockItem) null);
 
-    private static Block register(String name, Block block)
-    {
-        return register(name, block, new Item.Properties().group(FurnitureMod.GROUP));
+    public static final Block FRIDGE_LIGHT = register(Names.Block.FRIDGE_LIGHT, new FridgeBlock(Block.Properties.create(Material.IRON)
+            .sound(SoundType.METAL)
+            .hardnessAndResistance(5.0F, 6.0F),
+            () -> ModBlocks.FREEZER_LIGHT
+    ));
+
+    public static final Block FREEZER_LIGHT = register(Names.Block.FREEZER_LIGHT, new FreezerBlock(
+                    Block.Properties.create(Material.IRON)
+                            .sound(SoundType.METAL)
+                            .hardnessAndResistance(5.0F, 6.0F),
+                    FRIDGE_LIGHT),
+            false);
+
+    public static final Block FRIDGE_DARK = register(Names.Block.FRIDGE_DARK, new FridgeBlock(
+            Block.Properties.create(Material.IRON)
+                    .sound(SoundType.METAL)
+                    .hardnessAndResistance(5.0F, 6.0F),
+            () -> ModBlocks.FREEZER_DARK));
+
+    public static final Block FREEZER_DARK = register(Names.Block.FRIDGE_DARK, new FreezerBlock(
+                    Block.Properties.create(Material.IRON)
+                            .sound(SoundType.METAL)
+                            .hardnessAndResistance(5.0F, 6.0F), FRIDGE_DARK),
+            false);
+
+    private static Block register(String name, Block block) {
+        return register(name, block, true);
     }
 
-    private static Block register(String name, Block block, Item.Properties properties)
-    {
-        return register(name, block, new BlockItem(block, properties));
+    private static Block register(String name, Block block, Function<Block, Item> itemProvider) {
+        return register(name, block, true, itemProvider);
     }
 
-    private static Block register(String name, Block block, BlockItem item)
-    {
-        return register(name, block, block1 -> item);
+    private static Block register(String name, Block block, boolean item) {
+        return register(name, block, item, null);
     }
 
-    private static Block register(String name, Block block, Function<Block, BlockItem> function)
-    {
-        block.setRegistryName(name);
-        BLOCKS.add(block);
-        if(block.getRegistryName() != null)
-        {
-            Item item = function.apply(block);
-            if(item != null)
-            {
-                item.setRegistryName(name);
-                ITEMS.add(item);
-            }
-        }
+    private static Block register(String name, Block block, boolean item, Function<Block, Item> itemProvider) {
+        BLOCKS.add(new FurnitureBlock(name, block, item, itemProvider));
         return block;
     }
 
-    @SubscribeEvent
-    @SuppressWarnings("unused")
-    public static void registerBlocks(final RegistryEvent.Register<Block> event)
-    {
-        BLOCKS.forEach(block -> event.getRegistry().register(block));
-        BLOCKS.clear();
+    private static Item.Properties defaultProperties() {
+        return new Item.Properties().group(FurnitureAddon.GROUP);
     }
 
-    @SubscribeEvent
-    @SuppressWarnings("unused")
-    public static void registerItems(final RegistryEvent.Register<Item> event)
-    {
-        ITEMS.forEach(item -> event.getRegistry().register(item));
-        ITEMS.clear();
+    public static List<FurnitureBlock> getFurnitureBlocks() {
+        return BLOCKS;
+    }
+
+    public static class FurnitureBlock {
+        private final String location;
+        private final Block block;
+        private final boolean item;
+        private final Function<Block, Item> itemProvider;
+
+        public FurnitureBlock(String location, Block block, boolean item, Function<Block, Item> itemProvider) {
+            this.location = location;
+            this.block = block;
+            this.item = item;
+            this.itemProvider = itemProvider;
+        }
+
+        public String getLocation() {
+            return this.location;
+        }
+
+        public Block getBlock() {
+            return this.block;
+        }
+
+        public boolean hasItem() {
+            return this.item;
+        }
+
+        public Function<Block, Item> getItemProvider() {
+            return this.itemProvider;
+        }
+    }
+
+    public static void registerItems() {
+        for (FurnitureBlock block : getFurnitureBlocks()) {
+            if (!block.hasItem()) {
+                continue;
+            }
+
+            Item item;
+            if (block.getItemProvider() != null) {
+                item = block.getItemProvider().apply(block.getBlock());
+            } else {
+                item = new BlockItem(block.getBlock(), defaultProperties());
+                Item.BLOCK_TO_ITEM.put(block.getBlock(), item);
+            }
+
+            Registry.register(Registry.ITEM, block.getLocation(), item);
+        }
+    }
+
+    public static void register() {
+        for (FurnitureBlock block : getFurnitureBlocks()) {
+            Registry.register(Registry.BLOCK, block.getLocation(), block.getBlock());
+        }
+
+        for (FurnitureBlock block : getFurnitureBlocks()) {
+            for (BlockState state : block.getBlock().getStateContainer().getValidStates()) {
+                Block.BLOCK_STATE_IDS.add(state);
+            }
+            block.getBlock().getLootTable();
+        }
     }
 }

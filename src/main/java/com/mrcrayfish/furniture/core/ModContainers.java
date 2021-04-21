@@ -1,6 +1,5 @@
 package com.mrcrayfish.furniture.core;
 
-import com.mrcrayfish.furniture.Reference;
 import com.mrcrayfish.furniture.inventory.container.CrateContainer;
 import com.mrcrayfish.furniture.inventory.container.FreezerContainer;
 import com.mrcrayfish.furniture.inventory.container.MailBoxContainer;
@@ -9,55 +8,64 @@ import com.mrcrayfish.furniture.tileentity.CrateTileEntity;
 import com.mrcrayfish.furniture.tileentity.FreezerTileEntity;
 import com.mrcrayfish.furniture.tileentity.MailBoxTileEntity;
 import com.mrcrayfish.furniture.util.Names;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.network.IContainerFactory;
+import net.minecraft.util.registry.Registry;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Proxy;
 
 /**
  * Author: MrCrayfish
  */
-@Mod.EventBusSubscriber(modid = Reference.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public class ModContainers
-{
-    private static final List<ContainerType<?>> CONTAINER_TYPES = new ArrayList<>();
-
+public class ModContainers {
     @SuppressWarnings("ConstantConditions")
-    public static final ContainerType<CrateContainer> CRATE = register(Names.Container.CRATE, (IContainerFactory<CrateContainer>) (windowId, playerInventory, data) -> {
-        CrateTileEntity crateTileEntity = (CrateTileEntity) playerInventory.player.world.getTileEntity(data.readBlockPos());
-        return new CrateContainer(windowId, playerInventory, crateTileEntity, crateTileEntity.isLocked());
+    public static final ContainerType<CrateContainer> CRATE = register(Names.Container.CRATE, (windowId, playerInventory) -> {
+        return new CrateContainer(windowId, playerInventory, null, false);
     });
 
     public static final ContainerType<PostBoxContainer> POST_BOX = register(Names.Container.POST_BOX, PostBoxContainer::new);
 
-    public static final ContainerType<MailBoxContainer> MAIL_BOX = register(Names.Container.MAIL_BOX, (IContainerFactory<MailBoxContainer>) (windowId, playerInventory, data) -> {
-        MailBoxTileEntity mailBoxTileEntity = (MailBoxTileEntity) playerInventory.player.world.getTileEntity(data.readBlockPos());
-        return new MailBoxContainer(windowId, playerInventory, mailBoxTileEntity);
+    public static final ContainerType<MailBoxContainer> MAIL_BOX = register(Names.Container.MAIL_BOX, (windowId, playerInventory) -> {
+        return new MailBoxContainer(windowId, playerInventory, null);
     });
 
-    public static final ContainerType<FreezerContainer> FREEZER = register(Names.Container.FREEZER, (IContainerFactory<FreezerContainer>) (windowId, playerInventory, data) -> {
-        FreezerTileEntity freezerTileEntity = (FreezerTileEntity) playerInventory.player.world.getTileEntity(data.readBlockPos());
-        return new FreezerContainer(windowId, playerInventory, freezerTileEntity);
+    public static final ContainerType<FreezerContainer> FREEZER = register(Names.Container.FREEZER, (windowId, playerInventory) -> {
+        return new FreezerContainer(windowId, playerInventory, null);
     });
 
-    private static <T extends Container> ContainerType<T> register(String key, ContainerType.IFactory<T> factory)
-    {
-        ContainerType<T> type = new ContainerType<>(factory);
-        type.setRegistryName(key);
-        CONTAINER_TYPES.add(type);
+    private static <T extends Container> ContainerType<T> register(String key, ContainerFactory factory) {
+        Constructor<?> constructor = ContainerType.class.getDeclaredConstructors()[0];
+        constructor.setAccessible(true);
+        Object targetFactory = makeFactory(constructor.getParameterTypes()[0], factory);
+
+        ContainerType<T> type;
+        try {
+            type = (ContainerType<T>) constructor.newInstance(targetFactory);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException exception) {
+            throw new IllegalStateException(exception);
+        }
+
+        Registry.register(Registry.MENU, key, type);
+
         return type;
     }
 
-    @SubscribeEvent
-    @SuppressWarnings("unused")
-    public static void registerTypes(final RegistryEvent.Register<ContainerType<?>> event)
-    {
-        CONTAINER_TYPES.forEach(type -> event.getRegistry().register(type));
-        CONTAINER_TYPES.clear();
+    private static Object makeFactory(Class<?> target, ContainerFactory factory) {
+        return Proxy.newProxyInstance(ModContainers.class.getClassLoader(), new Class[]{target}, (proxy, method, args) -> {
+            if (method.getDeclaringClass().equals(target)) {
+                return factory.create((int) args[0], (PlayerInventory) args[1]);
+            }
+            return method.invoke(factory, args);
+        });
+    }
+
+    private interface ContainerFactory {
+        Container create(int windowId, PlayerInventory inventory);
+    }
+
+    public static void register() {
     }
 }

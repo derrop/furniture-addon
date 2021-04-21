@@ -9,9 +9,6 @@
   "key": {
     "L": {
       "item": "minecraft:stripped_birch_log"
-    },
-    "S": {
-      "tag": "forge:rods/wooden"
     }
   },
   "result": {

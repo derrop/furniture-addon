@@ -8,9 +8,6 @@
   "key": {
     "C": {
       "item": "minecraft:gray_concrete"
-    },
-    "S": {
-      "tag": "forge:rods/wooden"
     }
   },
   "result": {

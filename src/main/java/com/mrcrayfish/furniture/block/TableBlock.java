@@ -21,8 +21,7 @@ import java.util.List;
  * Author: MrCrayfish
  */
 //TODO update forge blockstate once
-public class TableBlock extends FurnitureWaterloggedBlock
-{
+public class TableBlock extends FurnitureWaterloggedBlock {
     public static final BooleanProperty NORTH = BooleanProperty.create("north");
     public static final BooleanProperty EAST = BooleanProperty.create("east");
     public static final BooleanProperty SOUTH = BooleanProperty.create("south");
@@ -30,23 +29,20 @@ public class TableBlock extends FurnitureWaterloggedBlock
 
     public final ImmutableMap<BlockState, VoxelShape> SHAPES;
 
-    public TableBlock(Properties properties)
-    {
+    public TableBlock(Properties properties) {
         super(properties);
         this.setDefaultState(this.getStateContainer().getBaseState().with(NORTH, false).with(EAST, false).with(SOUTH, false).with(WEST, false));
         SHAPES = this.generateShapes(this.getStateContainer().getValidStates());
     }
 
-    private ImmutableMap<BlockState, VoxelShape> generateShapes(ImmutableList<BlockState> states)
-    {
+    private ImmutableMap<BlockState, VoxelShape> generateShapes(ImmutableList<BlockState> states) {
         final VoxelShape TABLE_TOP = Block.makeCuboidShape(0.0, 14.0, 0.0, 16.0, 16.0, 16.0);
         final VoxelShape MIDDLE_POST = Block.makeCuboidShape(6.0, 0.0, 6.0, 10.0, 14.0, 10.0);
         final VoxelShape END_POST = Block.makeCuboidShape(3.0, 0.0, 6.0, 7.0, 14.0, 10.0);
         final VoxelShape CORNER_POST = Block.makeCuboidShape(3.0, 0.0, 9.0, 7.0, 14.0, 13.0);
 
         ImmutableMap.Builder<BlockState, VoxelShape> builder = new ImmutableMap.Builder<>();
-        for(BlockState state : states)
-        {
+        for (BlockState state : states) {
             boolean north = state.get(NORTH);
             boolean east = state.get(EAST);
             boolean south = state.get(SOUTH);
@@ -55,40 +51,23 @@ public class TableBlock extends FurnitureWaterloggedBlock
             List<VoxelShape> shapes = new ArrayList<>();
             shapes.add(TABLE_TOP);
 
-            if(!north & !east && !south && !west)
-            {
+            if (!north & !east && !south && !west) {
                 shapes.add(MIDDLE_POST);
-            }
-            else if(north & !east && !south && !west)
-            {
+            } else if (north & !east && !south && !west) {
                 shapes.add(VoxelShapeHelper.rotate(END_POST, Direction.NORTH));
-            }
-            else if(!north & east && !south && !west)
-            {
+            } else if (!north & east && !south && !west) {
                 shapes.add(VoxelShapeHelper.rotate(END_POST, Direction.EAST));
-            }
-            else if(!north & !east && south && !west)
-            {
+            } else if (!north & !east && south && !west) {
                 shapes.add(VoxelShapeHelper.rotate(END_POST, Direction.SOUTH));
-            }
-            else if(!north & !east && !south && west)
-            {
+            } else if (!north & !east && !south && west) {
                 shapes.add(VoxelShapeHelper.rotate(END_POST, Direction.WEST));
-            }
-            else if(north && east && !south && !west)
-            {
+            } else if (north && east && !south && !west) {
                 shapes.add(VoxelShapeHelper.rotate(CORNER_POST, Direction.EAST));
-            }
-            else if(!north && east && south && !west)
-            {
+            } else if (!north && east && south && !west) {
                 shapes.add(VoxelShapeHelper.rotate(CORNER_POST, Direction.SOUTH));
-            }
-            else if(!north && !east && south && west)
-            {
+            } else if (!north && !east && south && west) {
                 shapes.add(VoxelShapeHelper.rotate(CORNER_POST, Direction.WEST));
-            }
-            else if(north && !east && !south && west)
-            {
+            } else if (north && !east && !south && west) {
                 shapes.add(VoxelShapeHelper.rotate(CORNER_POST, Direction.NORTH));
             }
 
@@ -98,20 +77,17 @@ public class TableBlock extends FurnitureWaterloggedBlock
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader reader, BlockPos pos, ISelectionContext context)
-    {
+    public VoxelShape getShape(BlockState state, IBlockReader reader, BlockPos pos, ISelectionContext context) {
         return SHAPES.get(state);
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, IBlockReader reader, BlockPos pos, ISelectionContext context)
-    {
+    public VoxelShape getCollisionShape(BlockState state, IBlockReader reader, BlockPos pos, ISelectionContext context) {
         return SHAPES.get(state);
     }
 
     @Override
-    public BlockState updatePostPlacement(BlockState state, Direction direction, BlockState newState, IWorld world, BlockPos pos, BlockPos newPos)
-    {
+    public BlockState updatePostPlacement(BlockState state, Direction direction, BlockState newState, IWorld world, BlockPos pos, BlockPos newPos) {
         boolean north = world.getBlockState(pos.north()).getBlock() == this;
         boolean east = world.getBlockState(pos.east()).getBlock() == this;
         boolean south = world.getBlockState(pos.south()).getBlock() == this;
@@ -131,8 +107,7 @@ public class TableBlock extends FurnitureWaterloggedBlock
     }*/
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
-    {
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
         super.fillStateContainer(builder);
         builder.add(NORTH);
         builder.add(EAST);

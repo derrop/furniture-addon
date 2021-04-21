@@ -9,9 +9,7 @@
     "B": {
       "item": "minecraft:iron_bars"
     },
-    "I": {
-      "tag": "forge:ingots/iron"
-    },
+
     "W": {
       "item": "minecraft:black_wool"
     }

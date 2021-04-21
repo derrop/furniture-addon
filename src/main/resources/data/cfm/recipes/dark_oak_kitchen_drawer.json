@@ -12,9 +12,6 @@
     },
     "P": {
       "item": "minecraft:dark_oak_planks"
-    },
-    "C": {
-      "tag": "forge:chests/wooden"
     }
   },
   "result": {

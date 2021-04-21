@@ -1,13 +1,22 @@
 package com.mrcrayfish.furniture.core;
 
-import com.mrcrayfish.furniture.Reference;
-import com.mrcrayfish.furniture.tileentity.*;
+import com.mrcrayfish.furniture.tileentity.BedsideCabinetTileEntity;
+import com.mrcrayfish.furniture.tileentity.CabinetTileEntity;
+import com.mrcrayfish.furniture.tileentity.CoolerTileEntity;
+import com.mrcrayfish.furniture.tileentity.CrateTileEntity;
+import com.mrcrayfish.furniture.tileentity.DeskCabinetTileEntity;
+import com.mrcrayfish.furniture.tileentity.DoorMatTileEntity;
+import com.mrcrayfish.furniture.tileentity.FreezerTileEntity;
+import com.mrcrayfish.furniture.tileentity.FridgeTileEntity;
+import com.mrcrayfish.furniture.tileentity.GrillTileEntity;
+import com.mrcrayfish.furniture.tileentity.KitchenDrawerTileEntity;
+import com.mrcrayfish.furniture.tileentity.KitchenSinkTileEntity;
+import com.mrcrayfish.furniture.tileentity.MailBoxTileEntity;
+import com.mrcrayfish.furniture.tileentity.TrampolineTileEntity;
 import com.mrcrayfish.furniture.util.Names;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraft.util.registry.Registry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,9 +24,7 @@ import java.util.List;
 /**
  * Author: MrCrayfish
  */
-@Mod.EventBusSubscriber(modid = Reference.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public class ModTileEntities
-{
+public class ModTileEntities {
     private static final List<TileEntityType> TILE_ENTITY_TYPES = new ArrayList<>();
 
     public static final TileEntityType<CabinetTileEntity> CABINET = buildType(Names.TileEntity.CABINET, TileEntityType.Builder.create(CabinetTileEntity::new, ModBlocks.CABINET_OAK, ModBlocks.CABINET_SPRUCE, ModBlocks.CABINET_BIRCH, ModBlocks.CABINET_JUNGLE, ModBlocks.CABINET_ACACIA, ModBlocks.CABINET_DARK_OAK, ModBlocks.CABINET_STONE, ModBlocks.CABINET_GRANITE, ModBlocks.CABINET_DIORITE, ModBlocks.CABINET_ANDESITE, ModBlocks.CABINET_STRIPPED_OAK, ModBlocks.CABINET_STRIPPED_SPRUCE, ModBlocks.CABINET_STRIPPED_BIRCH, ModBlocks.CABINET_STRIPPED_JUNGLE, ModBlocks.CABINET_STRIPPED_ACACIA, ModBlocks.CABINET_STRIPPED_DARK_OAK));
@@ -34,19 +41,13 @@ public class ModTileEntities
     public static final TileEntityType<FridgeTileEntity> FRIDGE = buildType(Names.TileEntity.FRIDGE, TileEntityType.Builder.create(FridgeTileEntity::new, ModBlocks.FRIDGE_LIGHT, ModBlocks.FRIDGE_DARK));
     public static final TileEntityType<FreezerTileEntity> FREEZER = buildType(Names.TileEntity.FREEZER, TileEntityType.Builder.create(FreezerTileEntity::new, ModBlocks.FREEZER_LIGHT, ModBlocks.FREEZER_DARK));
 
-    private static <T extends TileEntity> TileEntityType<T> buildType(String id, TileEntityType.Builder<T> builder)
-    {
+    private static <T extends TileEntity> TileEntityType<T> buildType(String id, TileEntityType.Builder<T> builder) {
         TileEntityType<T> type = builder.build(null); //TODO may not allow null
-        type.setRegistryName(id);
+        Registry.register(Registry.BLOCK_ENTITY_TYPE, id, type);
         TILE_ENTITY_TYPES.add(type);
         return type;
     }
 
-    @SubscribeEvent
-    @SuppressWarnings("unused")
-    public static void registerTypes(final RegistryEvent.Register<TileEntityType<?>> event)
-    {
-        TILE_ENTITY_TYPES.forEach(type -> event.getRegistry().register(type));
-        TILE_ENTITY_TYPES.clear();
+    public static void register() {
     }
 }

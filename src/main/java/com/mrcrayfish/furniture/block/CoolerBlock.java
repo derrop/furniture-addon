@@ -6,6 +6,7 @@ import com.mrcrayfish.furniture.tileentity.CoolerTileEntity;
 import com.mrcrayfish.furniture.util.VoxelShapeHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.state.BooleanProperty;
@@ -22,7 +23,6 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -30,26 +30,22 @@ import java.util.Random;
 /**
  * Author: MrCrayfish
  */
-public class CoolerBlock extends FurnitureHorizontalWaterloggedBlock
-{
+public class CoolerBlock extends FurnitureHorizontalWaterloggedBlock implements ITileEntityProvider {
     public static final BooleanProperty OPEN = BooleanProperty.create("open");
 
     public final ImmutableMap<BlockState, VoxelShape> SHAPES;
 
-    public CoolerBlock(Properties properties)
-    {
+    public CoolerBlock(Properties properties) {
         super(properties);
         this.setDefaultState(this.getStateContainer().getBaseState().with(OPEN, false).with(DIRECTION, Direction.NORTH));
         SHAPES = this.generateShapes(this.getStateContainer().getValidStates());
     }
 
-    private ImmutableMap<BlockState, VoxelShape> generateShapes(ImmutableList<BlockState> states)
-    {
+    private ImmutableMap<BlockState, VoxelShape> generateShapes(ImmutableList<BlockState> states) {
         final VoxelShape[] COOLER_CLOSED = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(0, 0, 2, 16, 12, 14), Direction.SOUTH));
         final VoxelShape[] COOLER_OPEN = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(0, 0, 2, 16, 16, 14), Direction.SOUTH));
         ImmutableMap.Builder<BlockState, VoxelShape> builder = new ImmutableMap.Builder<>();
-        for(BlockState state : states)
-        {
+        for (BlockState state : states) {
             Direction direction = state.get(DIRECTION);
             boolean open = state.get(OPEN);
             List<VoxelShape> shapes = new ArrayList<>();
@@ -60,35 +56,28 @@ public class CoolerBlock extends FurnitureHorizontalWaterloggedBlock
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader reader, BlockPos pos, ISelectionContext context)
-    {
+    public VoxelShape getShape(BlockState state, IBlockReader reader, BlockPos pos, ISelectionContext context) {
         return SHAPES.get(state);
     }
 
     @Override
-    public VoxelShape getRenderShape(BlockState state, IBlockReader reader, BlockPos pos)
-    {
+    public VoxelShape getRenderShape(BlockState state, IBlockReader reader, BlockPos pos) {
         return SHAPES.get(state);
     }
 
     @Override
-    public void tick(BlockState state, ServerWorld world, BlockPos pos, Random random)
-    {
+    public void tick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         TileEntity tileEntity = world.getTileEntity(pos);
-        if(tileEntity instanceof CoolerTileEntity)
-        {
+        if (tileEntity instanceof CoolerTileEntity) {
             ((CoolerTileEntity) tileEntity).onScheduledTick();
         }
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult result)
-    {
-        if(!world.isRemote())
-        {
+    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult result) {
+        if (!world.isRemote()) {
             TileEntity tileEntity = world.getTileEntity(pos);
-            if(tileEntity instanceof CoolerTileEntity)
-            {
+            if (tileEntity instanceof CoolerTileEntity) {
                 playerEntity.openContainer((INamedContainerProvider) tileEntity);
             }
         }
@@ -96,21 +85,12 @@ public class CoolerBlock extends FurnitureHorizontalWaterloggedBlock
     }
 
     @Override
-    public boolean hasTileEntity(BlockState state)
-    {
-        return true;
-    }
-
-    @Nullable
-    @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world)
-    {
+    public TileEntity createNewTileEntity(IBlockReader worldIn) {
         return new CoolerTileEntity();
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
-    {
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
         super.fillStateContainer(builder);
         builder.add(OPEN);
     }

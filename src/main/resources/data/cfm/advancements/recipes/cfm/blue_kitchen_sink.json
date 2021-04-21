@@ -17,14 +17,7 @@
       }
     },
     "has_stone": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "tag": "forge:stone"
-          }
-        ]
-      }
+      "trigger": "minecraft:inventory_changed"
     },
     "has_bucket": {
       "trigger": "minecraft:inventory_changed",

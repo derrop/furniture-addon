@@ -7,9 +7,6 @@
   "key": {
     "C": {
       "item": "minecraft:green_concrete"
-    },
-    "G": {
-      "tag": "forge:fence_gates/wooden"
     }
   },
   "result": {

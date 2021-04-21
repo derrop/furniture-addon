@@ -7,9 +7,7 @@
     "F"
   ],
   "key": {
-    "C": {
-      "tag": "forge:chests/wooden"
-    },
+
     "F": {
       "item": "cfm:jungle_upgraded_fence"
     }

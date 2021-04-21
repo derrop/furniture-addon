@@ -10,9 +10,7 @@
     "C": {
       "item": "minecraft:gray_concrete"
     },
-    "I": {
-      "tag": "forge:ingots/iron"
-    },
+
     "P": {
       "item": "minecraft:stripped_spruce_log"
     },

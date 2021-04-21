@@ -12,9 +12,6 @@
     },
     "P": {
       "item": "minecraft:stripped_jungle_log"
-    },
-    "C": {
-      "tag": "forge:chests/wooden"
     }
   },
   "result": {

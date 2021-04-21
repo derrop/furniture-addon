@@ -4,6 +4,7 @@ import com.mrcrayfish.furniture.tileentity.KitchenDrawerTileEntity;
 import com.mrcrayfish.furniture.util.VoxelShapeHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.ISidedInventoryProvider;
@@ -23,26 +24,26 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
-import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 /**
  * Author: MrCrayfish
  */
-public class KitchenDrawerBlock extends FurnitureHorizontalBlock implements ISidedInventoryProvider
-{
+public class KitchenDrawerBlock extends FurnitureHorizontalBlock implements ISidedInventoryProvider, ITileEntityProvider {
     public static final BooleanProperty OPEN = BooleanProperty.create("open");
 
     public final Map<BlockState, VoxelShape> SHAPES = new HashMap<>();
 
-    public KitchenDrawerBlock(Properties properties)
-    {
+    public KitchenDrawerBlock(Properties properties) {
         super(properties);
         this.setDefaultState(this.getStateContainer().getBaseState().with(OPEN, false).with(DIRECTION, Direction.NORTH));
     }
 
-    private VoxelShape getShape(BlockState state)
-    {
+    private VoxelShape getShape(BlockState state) {
         return SHAPES.computeIfAbsent(state, state1 ->
         {
             final VoxelShape TOP = Block.makeCuboidShape(0, 13, 0, 16, 16, 16);
@@ -55,34 +56,27 @@ public class KitchenDrawerBlock extends FurnitureHorizontalBlock implements ISid
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader reader, BlockPos pos, ISelectionContext context)
-    {
+    public VoxelShape getShape(BlockState state, IBlockReader reader, BlockPos pos, ISelectionContext context) {
         return this.getShape(state);
     }
 
     @Override
-    public VoxelShape getRenderShape(BlockState state, IBlockReader reader, BlockPos pos)
-    {
+    public VoxelShape getRenderShape(BlockState state, IBlockReader reader, BlockPos pos) {
         return this.getShape(state);
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
-    {
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
         super.fillStateContainer(builder);
         builder.add(OPEN);
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult result)
-    {
-        if(state.get(DIRECTION).getOpposite() == result.getFace())
-        {
-            if(!world.isRemote())
-            {
+    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult result) {
+        if (state.get(DIRECTION).getOpposite() == result.getFace()) {
+            if (!world.isRemote()) {
                 TileEntity tileEntity = world.getTileEntity(pos);
-                if(tileEntity instanceof KitchenDrawerTileEntity)
-                {
+                if (tileEntity instanceof KitchenDrawerTileEntity) {
                     playerEntity.openContainer((INamedContainerProvider) tileEntity);
                 }
             }
@@ -92,34 +86,22 @@ public class KitchenDrawerBlock extends FurnitureHorizontalBlock implements ISid
     }
 
     @Override
-    public void tick(BlockState state, ServerWorld world, BlockPos pos, Random random)
-    {
+    public void tick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         TileEntity tileEntity = world.getTileEntity(pos);
-        if(tileEntity instanceof KitchenDrawerTileEntity)
-        {
+        if (tileEntity instanceof KitchenDrawerTileEntity) {
             ((KitchenDrawerTileEntity) tileEntity).onScheduledTick();
         }
     }
 
     @Override
-    public boolean hasTileEntity(BlockState state)
-    {
-        return true;
-    }
-
-    @Nullable
-    @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world)
-    {
+    public TileEntity createNewTileEntity(IBlockReader worldIn) {
         return new KitchenDrawerTileEntity();
     }
 
     @Override
-    public ISidedInventory createInventory(BlockState state, IWorld world, BlockPos pos)
-    {
+    public ISidedInventory createInventory(BlockState state, IWorld world, BlockPos pos) {
         TileEntity tileEntity = world.getTileEntity(pos);
-        if(tileEntity instanceof ISidedInventory)
-        {
+        if (tileEntity instanceof ISidedInventory) {
             return (ISidedInventory) tileEntity;
         }
         return null;

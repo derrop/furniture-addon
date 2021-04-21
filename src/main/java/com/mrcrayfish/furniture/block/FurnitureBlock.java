@@ -9,10 +9,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public abstract class FurnitureBlock extends Block
-{
-    public FurnitureBlock(Properties properties)
-    {
+public abstract class FurnitureBlock extends Block {
+    public FurnitureBlock(Properties properties) {
         super(properties);
     }
 
@@ -23,25 +21,20 @@ public abstract class FurnitureBlock extends Block
     }*/
 
     @Override
-    public int getComparatorInputOverride(BlockState state, World world, BlockPos pos)
-    {
+    public int getComparatorInputOverride(BlockState state, World world, BlockPos pos) {
         return Container.calcRedstone(world.getTileEntity(pos));
     }
 
     @Override
-    public boolean hasComparatorInputOverride(BlockState state)
-    {
-        return this.hasTileEntity(state);
+    public boolean hasComparatorInputOverride(BlockState state) {
+        return this.isTileEntityProvider();
     }
 
     @Override
-    public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving)
-    {
-        if(state.getBlock() != newState.getBlock())
-        {
+    public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (state.getBlock() != newState.getBlock()) {
             TileEntity tileEntity = world.getTileEntity(pos);
-            if(tileEntity instanceof IInventory)
-            {
+            if (tileEntity instanceof IInventory) {
                 InventoryHelper.dropInventoryItems(world, pos, (IInventory) tileEntity);
                 world.updateComparatorOutputLevel(pos, this);
             }
@@ -50,8 +43,7 @@ public abstract class FurnitureBlock extends Block
     }
 
     @Override
-    public boolean eventReceived(BlockState state, World world, BlockPos pos, int id, int type)
-    {
+    public boolean eventReceived(BlockState state, World world, BlockPos pos, int id, int type) {
         super.eventReceived(state, world, pos, id, type);
         TileEntity tileEntity = world.getTileEntity(pos);
         return tileEntity != null && tileEntity.receiveClientEvent(id, type);

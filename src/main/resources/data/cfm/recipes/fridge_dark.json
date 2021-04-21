@@ -9,12 +9,6 @@
   "key": {
     "C": {
       "item": "minecraft:gray_concrete"
-    },
-    "I": {
-      "tag": "forge:ingots/iron"
-    },
-    "B": {
-      "tag": "forge:chests/wooden"
     }
   },
   "result": {

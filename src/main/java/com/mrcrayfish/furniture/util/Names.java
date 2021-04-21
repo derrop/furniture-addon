@@ -5,10 +5,8 @@ import com.mrcrayfish.furniture.Reference;
 /**
  * Author: MrCrayfish
  */
-public class Names
-{
-    public static class Block
-    {
+public class Names {
+    public static class Block {
         public static final String TABLE_OAK = Reference.MOD_ID + ":oak_table";
         public static final String TABLE_SPRUCE = Reference.MOD_ID + ":spruce_table";
         public static final String TABLE_BIRCH = Reference.MOD_ID + ":birch_table";
@@ -458,26 +456,22 @@ public class Names
         public static final String TV_STAND = Reference.MOD_ID + ":tv_stand";
     }
 
-    public static class Item
-    {
+    public static class Item {
         public static final String SPATULA = Reference.MOD_ID + ":spatula";
     }
 
-    public static class Entity
-    {
+    public static class Entity {
         public static final String SEAT = Reference.MOD_ID + ":seat";
     }
 
-    public static class Container
-    {
+    public static class Container {
         public static final String CRATE = Reference.MOD_ID + ":crate";
         public static final String POST_BOX = Reference.MOD_ID + ":post_box";
         public static final String MAIL_BOX = Reference.MOD_ID + ":mail_box";
         public static final String FREEZER = Reference.MOD_ID + ":freezer";
     }
 
-    public static class TileEntity
-    {
+    public static class TileEntity {
         public static final String CABINET = Reference.MOD_ID + ":cabinet";
         public static final String BEDSIDE_CABINET = Reference.MOD_ID + ":bedside_cabinet";
         public static final String DESK_CABINET = Reference.MOD_ID + ":desk_cabinet";
@@ -493,8 +487,7 @@ public class Names
         public static final String FREEZER = Reference.MOD_ID + ":freezer";
     }
 
-    public static class Sound
-    {
+    public static class Sound {
         public static final String CABINET_OPEN = Reference.MOD_ID + ":block.cabinet.open";
         public static final String CABINET_CLOSE = Reference.MOD_ID + ":block.cabinet.close";
         public static final String BEDSIDE_CABINET_OPEN = Reference.MOD_ID + ":block.bedside_cabinet.open";

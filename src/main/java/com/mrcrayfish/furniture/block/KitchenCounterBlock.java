@@ -22,20 +22,17 @@ import java.util.Map;
 /**
  * Author: MrCrayfish
  */
-public class KitchenCounterBlock extends FurnitureHorizontalBlock
-{
+public class KitchenCounterBlock extends FurnitureHorizontalBlock {
     public static final EnumProperty<Type> TYPE = EnumProperty.create("type", Type.class);
 
     public final Map<BlockState, VoxelShape> SHAPES = new HashMap<>();
 
-    public KitchenCounterBlock(Properties properties)
-    {
+    public KitchenCounterBlock(Properties properties) {
         super(properties);
         this.setDefaultState(this.getStateContainer().getBaseState().with(TYPE, Type.DEFAULT).with(DIRECTION, Direction.NORTH));
     }
 
-    private VoxelShape getShape(BlockState state)
-    {
+    private VoxelShape getShape(BlockState state) {
         return SHAPES.computeIfAbsent(state, state1 ->
         {
             final VoxelShape TOP = Block.makeCuboidShape(0, 13, 0, 16, 16, 16);
@@ -48,8 +45,7 @@ public class KitchenCounterBlock extends FurnitureHorizontalBlock
             Type type = state1.get(TYPE);
             List<VoxelShape> shapes = new ArrayList<>();
             shapes.add(TOP);
-            switch(type)
-            {
+            switch (type) {
                 case DEFAULT:
                     shapes.add(DEFAULT_BASE[state.get(DIRECTION).getHorizontalIndex()]);
                     break;
@@ -73,61 +69,47 @@ public class KitchenCounterBlock extends FurnitureHorizontalBlock
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader reader, BlockPos pos, ISelectionContext context)
-    {
+    public VoxelShape getShape(BlockState state, IBlockReader reader, BlockPos pos, ISelectionContext context) {
         return this.getShape(state);
     }
 
     @Override
-    public VoxelShape getRenderShape(BlockState state, IBlockReader reader, BlockPos pos)
-    {
+    public VoxelShape getRenderShape(BlockState state, IBlockReader reader, BlockPos pos) {
         return this.getShape(state);
     }
 
     @Override
-    public BlockState getStateForPlacement(BlockItemUseContext context)
-    {
+    public BlockState getStateForPlacement(BlockItemUseContext context) {
         return this.getKitchenCounterState(super.getStateForPlacement(context), context.getWorld(), context.getPos());
     }
 
     @Override
-    public BlockState updatePostPlacement(BlockState state, Direction direction, BlockState newState, IWorld world, BlockPos pos, BlockPos newPos)
-    {
+    public BlockState updatePostPlacement(BlockState state, Direction direction, BlockState newState, IWorld world, BlockPos pos, BlockPos newPos) {
         return this.getKitchenCounterState(state, world, pos);
     }
 
-    private BlockState getKitchenCounterState(BlockState state, IWorld world, BlockPos pos)
-    {
+    private BlockState getKitchenCounterState(BlockState state, IWorld world, BlockPos pos) {
         Direction direction = state.get(DIRECTION);
         BlockState frontState = world.getBlockState(pos.offset(direction.getOpposite()));
-        if(frontState.getBlock() instanceof KitchenCounterBlock)
-        {
-            if(frontState.get(DIRECTION) == direction.rotateY())
-            {
+        if (frontState.getBlock() instanceof KitchenCounterBlock) {
+            if (frontState.get(DIRECTION) == direction.rotateY()) {
                 return state.with(TYPE, Type.RIGHT_CORNER);
-            }
-            else if(frontState.get(DIRECTION) == direction.rotateYCCW())
-            {
+            } else if (frontState.get(DIRECTION) == direction.rotateYCCW()) {
                 return state.with(TYPE, Type.LEFT_CORNER);
             }
         }
 
         BlockState backState = world.getBlockState(pos.offset(direction));
-        if(backState.getBlock() instanceof KitchenCounterBlock)
-        {
-            if(backState.get(DIRECTION) == direction.rotateY())
-            {
+        if (backState.getBlock() instanceof KitchenCounterBlock) {
+            if (backState.get(DIRECTION) == direction.rotateY()) {
                 BlockState leftState = world.getBlockState(pos.offset(direction.rotateYCCW()));
-                if(!(leftState.getBlock() instanceof KitchenCounterBlock) || leftState.get(DIRECTION) == direction.getOpposite())
-                {
+                if (!(leftState.getBlock() instanceof KitchenCounterBlock) || leftState.get(DIRECTION) == direction.getOpposite()) {
                     return state.with(TYPE, Type.LEFT_CORNER_INVERTED);
                 }
             }
-            if(backState.get(DIRECTION) == direction.rotateYCCW())
-            {
+            if (backState.get(DIRECTION) == direction.rotateYCCW()) {
                 BlockState rightState = world.getBlockState(pos.offset(direction.rotateY()));
-                if(!(rightState.getBlock() instanceof KitchenCounterBlock) || rightState.get(DIRECTION) == direction.getOpposite())
-                {
+                if (!(rightState.getBlock() instanceof KitchenCounterBlock) || rightState.get(DIRECTION) == direction.getOpposite()) {
                     return state.with(TYPE, Type.RIGHT_CORNER_INVERTED);
                 }
             }
@@ -137,14 +119,12 @@ public class KitchenCounterBlock extends FurnitureHorizontalBlock
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
-    {
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
         super.fillStateContainer(builder);
         builder.add(TYPE);
     }
 
-    public enum Type implements IStringSerializable
-    {
+    public enum Type implements IStringSerializable {
         DEFAULT("default"),
         LEFT_CORNER("left_corner"),
         RIGHT_CORNER("right_corner"),
@@ -153,20 +133,17 @@ public class KitchenCounterBlock extends FurnitureHorizontalBlock
 
         private String id;
 
-        Type(String id)
-        {
+        Type(String id) {
             this.id = id;
         }
 
         @Override
-        public String toString()
-        {
+        public String toString() {
             return this.getString();
         }
 
         @Override
-        public String getString()
-        {
+        public String getString() {
             return this.id;
         }
     }

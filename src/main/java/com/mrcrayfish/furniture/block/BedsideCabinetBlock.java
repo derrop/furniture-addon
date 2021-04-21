@@ -6,6 +6,7 @@ import com.mrcrayfish.furniture.tileentity.BedsideCabinetTileEntity;
 import com.mrcrayfish.furniture.util.VoxelShapeHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.state.BooleanProperty;
@@ -22,7 +23,6 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -30,21 +30,18 @@ import java.util.Random;
 /**
  * Author: MrCrayfish
  */
-public class BedsideCabinetBlock extends FurnitureHorizontalWaterloggedBlock
-{
+public class BedsideCabinetBlock extends FurnitureHorizontalWaterloggedBlock implements ITileEntityProvider {
     public static final BooleanProperty OPEN = BooleanProperty.create("open");
 
     public final ImmutableMap<BlockState, VoxelShape> SHAPES;
 
-    public BedsideCabinetBlock(Properties properties)
-    {
+    public BedsideCabinetBlock(Properties properties) {
         super(properties);
         this.setDefaultState(this.getStateContainer().getBaseState().with(DIRECTION, Direction.NORTH).with(OPEN, false));
         SHAPES = this.generateShapes(this.getStateContainer().getValidStates());
     }
 
-    private ImmutableMap<BlockState, VoxelShape> generateShapes(ImmutableList<BlockState> states)
-    {
+    private ImmutableMap<BlockState, VoxelShape> generateShapes(ImmutableList<BlockState> states) {
         final VoxelShape[] LEG_BACK_LEG = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(1, 0, 1, 3, 2, 3), Direction.SOUTH));
         final VoxelShape[] LEG_FRONT_LEFT = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(1, 0, 11, 3, 2, 13), Direction.SOUTH));
         final VoxelShape[] LEG_FRONT_RIGHT = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(13, 0, 11, 15, 2, 13), Direction.SOUTH));
@@ -62,8 +59,7 @@ public class BedsideCabinetBlock extends FurnitureHorizontalWaterloggedBlock
         final VoxelShape[] DRAW_INSIDE_RIGHT = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(13, 10, 13, 15, 14, 20), Direction.SOUTH));
 
         ImmutableMap.Builder<BlockState, VoxelShape> builder = new ImmutableMap.Builder<>();
-        for(BlockState state : states)
-        {
+        for (BlockState state : states) {
             Direction direction = state.get(DIRECTION);
             List<VoxelShape> shapes = new ArrayList<>();
             shapes.add(LEG_BACK_LEG[direction.getHorizontalIndex()]);
@@ -72,8 +68,7 @@ public class BedsideCabinetBlock extends FurnitureHorizontalWaterloggedBlock
             shapes.add(LEG_BACK_RIGHT[direction.getHorizontalIndex()]);
             shapes.add(TOP[direction.getHorizontalIndex()]);
             shapes.add(HANDLE_BOTTOM[direction.getHorizontalIndex()]);
-            if(state.get(OPEN))
-            {
+            if (state.get(OPEN)) {
                 shapes.add(BASE_OPEN[direction.getHorizontalIndex()]);
                 shapes.add(DRAW_TOP_OPEN[direction.getHorizontalIndex()]);
                 shapes.add(DRAW_BOTTOM_OPEN[direction.getHorizontalIndex()]);
@@ -81,9 +76,7 @@ public class BedsideCabinetBlock extends FurnitureHorizontalWaterloggedBlock
                 shapes.add(DRAW_INSIDE_BOTTOM[direction.getHorizontalIndex()]);
                 shapes.add(DRAW_INSIDE_LEFT[direction.getHorizontalIndex()]);
                 shapes.add(DRAW_INSIDE_RIGHT[direction.getHorizontalIndex()]);
-            }
-            else
-            {
+            } else {
                 shapes.add(BASE_CLOSED[direction.getHorizontalIndex()]);
                 shapes.add(HANDLE_TOP_CLOSED[direction.getHorizontalIndex()]);
             }
@@ -93,27 +86,21 @@ public class BedsideCabinetBlock extends FurnitureHorizontalWaterloggedBlock
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader reader, BlockPos pos, ISelectionContext context)
-    {
+    public VoxelShape getShape(BlockState state, IBlockReader reader, BlockPos pos, ISelectionContext context) {
         return SHAPES.get(state);
     }
 
     @Override
-    public VoxelShape getRenderShape(BlockState state, IBlockReader reader, BlockPos pos)
-    {
+    public VoxelShape getRenderShape(BlockState state, IBlockReader reader, BlockPos pos) {
         return SHAPES.get(state);
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult result)
-    {
-        if(state.get(DIRECTION).getOpposite() == result.getFace())
-        {
-            if(!world.isRemote())
-            {
+    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult result) {
+        if (state.get(DIRECTION).getOpposite() == result.getFace()) {
+            if (!world.isRemote()) {
                 TileEntity tileEntity = world.getTileEntity(pos);
-                if(tileEntity instanceof BedsideCabinetTileEntity)
-                {
+                if (tileEntity instanceof BedsideCabinetTileEntity) {
                     playerEntity.openContainer((INamedContainerProvider) tileEntity);
                 }
             }
@@ -123,31 +110,20 @@ public class BedsideCabinetBlock extends FurnitureHorizontalWaterloggedBlock
     }
 
     @Override
-    public void tick(BlockState state, ServerWorld world, BlockPos pos, Random random)
-    {
+    public void tick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         TileEntity tileEntity = world.getTileEntity(pos);
-        if(tileEntity instanceof BedsideCabinetTileEntity)
-        {
+        if (tileEntity instanceof BedsideCabinetTileEntity) {
             ((BedsideCabinetTileEntity) tileEntity).onScheduledTick();
         }
     }
 
     @Override
-    public boolean hasTileEntity(BlockState state)
-    {
-        return true;
-    }
-
-    @Nullable
-    @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world)
-    {
+    public TileEntity createNewTileEntity(IBlockReader world) {
         return new BedsideCabinetTileEntity();
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
-    {
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
         super.fillStateContainer(builder);
         builder.add(OPEN);
     }

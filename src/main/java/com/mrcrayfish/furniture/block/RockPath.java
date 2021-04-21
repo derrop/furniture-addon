@@ -10,24 +10,20 @@ import net.minecraft.world.IBlockReader;
 /**
  * Author: MrCrayfish
  */
-public class RockPath extends FurnitureWaterloggedBlock
-{
+public class RockPath extends FurnitureWaterloggedBlock {
     private static final VoxelShape SHAPE = Block.makeCuboidShape(1, 0, 1, 15, 1, 15);
 
-    public RockPath(Properties properties)
-    {
+    public RockPath(Properties properties) {
         super(properties);
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader reader, BlockPos pos, ISelectionContext context)
-    {
+    public VoxelShape getShape(BlockState state, IBlockReader reader, BlockPos pos, ISelectionContext context) {
         return SHAPE;
     }
 
     @Override
-    public VoxelShape getRenderShape(BlockState state, IBlockReader reader, BlockPos pos)
-    {
+    public VoxelShape getRenderShape(BlockState state, IBlockReader reader, BlockPos pos) {
         return SHAPE;
     }
 }

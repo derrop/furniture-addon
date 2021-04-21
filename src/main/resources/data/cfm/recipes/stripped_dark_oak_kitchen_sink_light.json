@@ -10,9 +10,7 @@
     "C": {
       "item": "minecraft:white_concrete"
     },
-    "I": {
-      "tag": "forge:ingots/iron"
-    },
+
     "P": {
       "item": "minecraft:stripped_dark_oak_log"
     },

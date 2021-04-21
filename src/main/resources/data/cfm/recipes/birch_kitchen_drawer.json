@@ -12,9 +12,6 @@
     },
     "P": {
       "item": "minecraft:birch_planks"
-    },
-    "C": {
-      "tag": "forge:chests/wooden"
     }
   },
   "result": {

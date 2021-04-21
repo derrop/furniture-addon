@@ -8,9 +8,6 @@
   "key": {
     "L": {
       "item": "minecraft:acacia_log"
-    },
-    "S": {
-      "tag": "forge:rods/wooden"
     }
   },
   "result": {

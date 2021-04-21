@@ -9,12 +9,6 @@
   "key": {
     "W": {
       "item": "minecraft:blue_wool"
-    },
-    "S": {
-      "tag": "forge:slimeballs"
-    },
-    "I": {
-      "tag": "forge:ingots/iron"
     }
   },
   "result": {

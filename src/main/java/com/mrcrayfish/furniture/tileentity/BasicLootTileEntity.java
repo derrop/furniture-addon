@@ -20,13 +20,11 @@ import java.util.stream.IntStream;
 /**
  * Author: MrCrayfish
  */
-public abstract class BasicLootTileEntity extends LockableLootTileEntity implements ISidedInventory
-{
+public abstract class BasicLootTileEntity extends LockableLootTileEntity implements ISidedInventory {
     private final int[] slots;
     protected NonNullList<ItemStack> inventory;
 
-    public BasicLootTileEntity(TileEntityType<?> tileEntityType)
-    {
+    public BasicLootTileEntity(TileEntityType<?> tileEntityType) {
         super(tileEntityType);
         this.inventory = NonNullList.withSize(this.getSizeInventory(), ItemStack.EMPTY);
         this.slots = IntStream.range(0, this.getSizeInventory()).toArray();
@@ -39,23 +37,18 @@ public abstract class BasicLootTileEntity extends LockableLootTileEntity impleme
     protected abstract ITextComponent getDefaultName();
 
     @Override
-    protected NonNullList<ItemStack> getItems()
-    {
+    protected NonNullList<ItemStack> getItems() {
         return inventory;
     }
 
     @Override
-    protected void setItems(NonNullList<ItemStack> stacks)
-    {
+    protected void setItems(NonNullList<ItemStack> stacks) {
         this.inventory = stacks;
     }
 
-    protected boolean addItem(ItemStack stack)
-    {
-        for(int i = 0; i < this.getSizeInventory(); i++)
-        {
-            if(this.getStackInSlot(i).isEmpty())
-            {
+    protected boolean addItem(ItemStack stack) {
+        for (int i = 0; i < this.getSizeInventory(); i++) {
+            if (this.getStackInSlot(i).isEmpty()) {
                 this.setInventorySlotContents(i, stack);
                 return true;
             }
@@ -67,28 +60,22 @@ public abstract class BasicLootTileEntity extends LockableLootTileEntity impleme
     protected abstract Container createMenu(int windowId, PlayerInventory playerInventory);
 
     @Override
-    public boolean isEmpty()
-    {
+    public boolean isEmpty() {
         Iterator it = this.inventory.iterator();
         ItemStack stack;
-        do
-        {
-            if(!it.hasNext())
-            {
+        do {
+            if (!it.hasNext()) {
                 return true;
             }
             stack = (ItemStack) it.next();
         }
-        while(stack.isEmpty());
+        while (stack.isEmpty());
         return false;
     }
 
-    public boolean isFull()
-    {
-        for(ItemStack stack : this.inventory)
-        {
-            if(stack.isEmpty())
-            {
+    public boolean isFull() {
+        for (ItemStack stack : this.inventory) {
+            if (stack.isEmpty()) {
                 return false;
             }
         }
@@ -96,42 +83,35 @@ public abstract class BasicLootTileEntity extends LockableLootTileEntity impleme
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound)
-    {
+    public CompoundNBT write(CompoundNBT compound) {
         super.write(compound);
-        if(!this.checkLootAndWrite(compound))
-        {
+        if (!this.checkLootAndWrite(compound)) {
             ItemStackHelper.saveAllItems(compound, this.inventory);
         }
         return compound;
     }
 
     @Override
-    public void read(BlockState blockState, CompoundNBT compound)
-    {
+    public void read(BlockState blockState, CompoundNBT compound) {
         super.read(blockState, compound);
         this.inventory = NonNullList.withSize(this.getSizeInventory(), ItemStack.EMPTY);
-        if(!this.checkLootAndRead(compound))
-        {
+        if (!this.checkLootAndRead(compound)) {
             ItemStackHelper.loadAllItems(compound, this.inventory);
         }
     }
 
     @Override
-    public int[] getSlotsForFace(Direction direction)
-    {
+    public int[] getSlotsForFace(Direction direction) {
         return slots;
     }
 
     @Override
-    public boolean canInsertItem(int i, ItemStack itemStack, @Nullable Direction direction)
-    {
+    public boolean canInsertItem(int i, ItemStack itemStack, @Nullable Direction direction) {
         return true;
     }
 
     @Override
-    public boolean canExtractItem(int i, ItemStack itemStack, Direction direction)
-    {
+    public boolean canExtractItem(int i, ItemStack itemStack, Direction direction) {
         return true;
     }
 }

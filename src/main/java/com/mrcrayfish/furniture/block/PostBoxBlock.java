@@ -26,21 +26,18 @@ import java.util.List;
 /**
  * Author: MrCrayfish
  */
-public class PostBoxBlock extends FurnitureHorizontalWaterloggedBlock
-{
+public class PostBoxBlock extends FurnitureHorizontalWaterloggedBlock {
     private static final TranslationTextComponent TITLE = new TranslationTextComponent("container.cfm.post_box");
 
     public final VoxelShape SHAPE;
 
-    public PostBoxBlock(Properties properties)
-    {
+    public PostBoxBlock(Properties properties) {
         super(properties);
         this.setDefaultState(this.getStateContainer().getBaseState().with(DIRECTION, Direction.NORTH));
         SHAPE = this.generateShape();
     }
 
-    private VoxelShape generateShape()
-    {
+    private VoxelShape generateShape() {
         List<VoxelShape> shapes = new ArrayList<>();
         shapes.add(Block.makeCuboidShape(1, 0, 1, 3, 6, 3));
         shapes.add(Block.makeCuboidShape(13, 0, 1, 15, 6, 3));
@@ -51,28 +48,24 @@ public class PostBoxBlock extends FurnitureHorizontalWaterloggedBlock
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader reader, BlockPos pos, ISelectionContext context)
-    {
+    public VoxelShape getShape(BlockState state, IBlockReader reader, BlockPos pos, ISelectionContext context) {
         return SHAPE;
     }
 
     @Override
-    public VoxelShape getRenderShape(BlockState state, IBlockReader reader, BlockPos pos)
-    {
+    public VoxelShape getRenderShape(BlockState state, IBlockReader reader, BlockPos pos) {
         return SHAPE;
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult result)
-    {
+    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult result) {
         playerEntity.openContainer(state.getContainer(world, pos));
         return ActionResultType.SUCCESS;
     }
 
     @Nullable
     @Override
-    public INamedContainerProvider getContainer(BlockState state, World world, BlockPos pos)
-    {
+    public INamedContainerProvider getContainer(BlockState state, World world, BlockPos pos) {
         return new SimpleNamedContainerProvider((windowId, playerInventory, playerEntity) -> {
             return new PostBoxContainer(windowId, playerInventory, IWorldPosCallable.of(world, pos));
         }, TITLE);

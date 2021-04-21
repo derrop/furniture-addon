@@ -8,9 +8,6 @@
   "key": {
     "L": {
       "item": "minecraft:stripped_dark_oak_log"
-    },
-    "S": {
-      "tag": "forge:rods/wooden"
     }
   },
   "result": {

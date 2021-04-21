@@ -10,9 +10,6 @@
     "C": {
       "item": "minecraft:gray_concrete"
     },
-    "I": {
-      "tag": "forge:ingots/iron"
-    },
     "P": {
       "item": "minecraft:oak_planks"
     },

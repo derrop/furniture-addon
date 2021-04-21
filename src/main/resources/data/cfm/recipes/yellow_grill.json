@@ -12,9 +12,6 @@
     },
     "B": {
       "item": "minecraft:iron_bars"
-    },
-    "I": {
-      "tag": "forge:ingots/iron"
     }
   },
   "result": {

@@ -6,6 +6,7 @@ import com.mrcrayfish.furniture.tileentity.CabinetTileEntity;
 import com.mrcrayfish.furniture.util.VoxelShapeHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.ISidedInventoryProvider;
@@ -25,7 +26,6 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -33,21 +33,18 @@ import java.util.Random;
 /**
  * Author: MrCrayfish
  */
-public class CabinetBlock extends FurnitureHorizontalWaterloggedBlock implements ISidedInventoryProvider
-{
+public class CabinetBlock extends FurnitureHorizontalBlock implements ISidedInventoryProvider, ITileEntityProvider {
     public static final BooleanProperty OPEN = BooleanProperty.create("open");
 
     public final ImmutableMap<BlockState, VoxelShape> SHAPES;
 
-    public CabinetBlock(Properties properties)
-    {
+    public CabinetBlock(Properties properties) {
         super(properties);
         this.setDefaultState(this.getStateContainer().getBaseState().with(DIRECTION, Direction.NORTH).with(OPEN, false));
         SHAPES = this.generateShapes(this.getStateContainer().getValidStates());
     }
 
-    private ImmutableMap<BlockState, VoxelShape> generateShapes(ImmutableList<BlockState> states)
-    {
+    private ImmutableMap<BlockState, VoxelShape> generateShapes(ImmutableList<BlockState> states) {
         final VoxelShape[] BASE_CLOSED = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(0, 0, 0, 16, 16, 15), Direction.SOUTH));
         final VoxelShape[] HANDLE_CLOSED = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(14, 5, 15, 15, 11, 16), Direction.SOUTH));
         final VoxelShape[] BASE_OPEN = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(0, 0, 0, 16, 16, 13), Direction.SOUTH));
@@ -55,18 +52,14 @@ public class CabinetBlock extends FurnitureHorizontalWaterloggedBlock implements
         final VoxelShape[] DOOR_OPEN = VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(0, 0, 13, 2, 16, 29), Direction.SOUTH));
 
         ImmutableMap.Builder<BlockState, VoxelShape> builder = new ImmutableMap.Builder<>();
-        for(BlockState state : states)
-        {
+        for (BlockState state : states) {
             Direction direction = state.get(DIRECTION);
             List<VoxelShape> shapes = new ArrayList<>();
-            if(state.get(OPEN))
-            {
+            if (state.get(OPEN)) {
                 shapes.add(BASE_OPEN[direction.getHorizontalIndex()]);
                 shapes.add(HANDLE_OPEN[direction.getHorizontalIndex()]);
                 shapes.add(DOOR_OPEN[direction.getHorizontalIndex()]);
-            }
-            else
-            {
+            } else {
                 shapes.add(BASE_CLOSED[direction.getHorizontalIndex()]);
                 shapes.add(HANDLE_CLOSED[direction.getHorizontalIndex()]);
             }
@@ -76,27 +69,21 @@ public class CabinetBlock extends FurnitureHorizontalWaterloggedBlock implements
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader reader, BlockPos pos, ISelectionContext context)
-    {
+    public VoxelShape getShape(BlockState state, IBlockReader reader, BlockPos pos, ISelectionContext context) {
         return SHAPES.get(state);
     }
 
     @Override
-    public VoxelShape getRenderShape(BlockState state, IBlockReader reader, BlockPos pos)
-    {
+    public VoxelShape getRenderShape(BlockState state, IBlockReader reader, BlockPos pos) {
         return SHAPES.get(state);
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult result)
-    {
-        if(state.get(DIRECTION).getOpposite() == result.getFace())
-        {
-            if(!world.isRemote())
-            {
+    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult result) {
+        if (state.get(DIRECTION).getOpposite() == result.getFace()) {
+            if (!world.isRemote()) {
                 TileEntity tileEntity = world.getTileEntity(pos);
-                if(tileEntity instanceof CabinetTileEntity)
-                {
+                if (tileEntity instanceof CabinetTileEntity) {
                     playerEntity.openContainer((INamedContainerProvider) tileEntity);
                 }
             }
@@ -106,41 +93,28 @@ public class CabinetBlock extends FurnitureHorizontalWaterloggedBlock implements
     }
 
     @Override
-    public void tick(BlockState state, ServerWorld world, BlockPos pos, Random random)
-    {
+    public void tick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         TileEntity tileEntity = world.getTileEntity(pos);
-        if(tileEntity instanceof CabinetTileEntity)
-        {
+        if (tileEntity instanceof CabinetTileEntity) {
             ((CabinetTileEntity) tileEntity).onScheduledTick();
         }
     }
 
     @Override
-    public boolean hasTileEntity(BlockState state)
-    {
-        return true;
-    }
-
-    @Nullable
-    @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world)
-    {
+    public TileEntity createNewTileEntity(IBlockReader worldIn) {
         return new CabinetTileEntity();
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
-    {
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
         super.fillStateContainer(builder);
         builder.add(OPEN);
     }
 
     @Override
-    public ISidedInventory createInventory(BlockState state, IWorld world, BlockPos pos)
-    {
+    public ISidedInventory createInventory(BlockState state, IWorld world, BlockPos pos) {
         TileEntity tileEntity = world.getTileEntity(pos);
-        if(tileEntity instanceof ISidedInventory)
-        {
+        if (tileEntity instanceof ISidedInventory) {
             return (ISidedInventory) tileEntity;
         }
         return null;

@@ -7,17 +7,8 @@
     "CCC"
   ],
   "key": {
-    "S": {
-      "tag": "forge:stone"
-    },
-    "D": {
-      "tag": "forge:dyes/lime"
-    },
     "C": {
       "item": "minecraft:terracotta"
-    },
-    "B": {
-      "tag": "forge:chests/wooden"
     }
   },
   "result": {
